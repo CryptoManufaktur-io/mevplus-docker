@@ -1,0 +1,4 @@
+services:
+  mev-plus:
+    ports:
+      - ${SHARE_IP:-}:${K2_PORT:-10000}:${K2_PORT:-10000}/tcp

@@ -427,8 +427,7 @@ envmigrate() {
     return 0
   fi
 
-# Adjust these vars to your project
-  ALL_VARS=( COMPOSE_FILE CL_NODE EL_NODE ETH_PRIVATE_KEY MEV_NODE \
+  ALL_VARS=( COMPOSE_FILE CL_NODE EL_NODE ETH_PRIVATE_KEY MEV_NODE LOG_LEVEL K2_PORT SHARE_IP \
              SCRIPT_TAG MEVPLUS_SRC_BUILD_TARGET MEVPLUS_SRC_REPO )
   OLD_VARS=( )
   NEW_VARS=( )
@@ -450,7 +449,7 @@ envmigrate() {
   for var in "${ALL_VARS[@]}"; do
     value=$(sed -n -e "s/^${var}=\(.*\)/\1/p" "${ENV_FILE}.source" || true)
 # Adjust for vars that are possibly empty
-    if [ -n "${value}" ] || [ "${var}" = "SNAPSHOT" ]; then
+    if [ -n "${value}" ] || [ "${var}" = "SHARE_IP" ]; then
       sed -i'.original' -e "s~^\(${var}\s*=\s*\).*$~\1${value}~" "${ENV_FILE}"
     fi
   done
