@@ -1,0 +1,4 @@
+networks:
+  default:
+    name: eth-docker_default
+    external: true

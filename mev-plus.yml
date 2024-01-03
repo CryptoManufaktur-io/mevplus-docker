@@ -1,0 +1,34 @@
+x-logging: &logging
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+      tag: '{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}'
+
+services:
+  mev-plus:
+    restart: "unless-stopped"
+    build:
+      context: .
+      dockerfile: Dockerfile.source
+      args:
+        - BUILD_TARGET=${MEVPLUS_SRC_BUILD_TARGET:-'$(git describe --tags $(git rev-list --tags --max-count=1))'}
+        - SRC_REPO=${MEVPLUS_SRC_REPO:-https://github.com/pon-network/mev-plus}
+    stop_grace_period: 1m
+    image: mevplus:local
+    pull_policy: build
+    user: mevPlus
+    entrypoint:
+      - docker-entrypoint.sh
+      - mevPlus
+      - --builderApi.logger-level
+      - ${LOG_LEVEL}
+      - --builderApi.listen-address
+      - http://0.0.0.0:18551
+      - --k2.beacon-node-url
+      - ${CL_NODE}
+      - --k2.execution-node-url
+      - ${EL_NODE}
+      - --k2.eth1-private-key
+      - ${ETH_PRIVATE_KEY}

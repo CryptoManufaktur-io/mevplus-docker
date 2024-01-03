@@ -1,0 +1,40 @@
+# Build mev-plus in a stock Go build container
+FROM golang:1.21-alpine as builder
+
+ARG BUILD_TARGET
+ARG SRC_REPO
+
+RUN apk update && apk add --no-cache make gcc musl-dev linux-headers git bash
+
+WORKDIR /src
+RUN bash -c "git clone ${SRC_REPO} mev-plus && cd mev-plus && git config advice.detachedHead false && git fetch --all --tags && \
+if [[ ${BUILD_TARGET} =~ pr-.+ ]]; then git fetch origin pull/$(echo ${BUILD_TARGET} | cut -d '-' -f 2)/head:mplus-pr; git checkout mplus-pr; else git checkout ${BUILD_TARGET}; fi && \
+go build -o mevPlus mevPlus.go"
+
+# Pull all binaries into a second stage deploy container
+FROM alpine:3
+
+ARG USER=mevPlus
+ARG UID=11000
+
+RUN apk add --no-cache ca-certificates tzdata bash su-exec git jq
+
+# See https://stackoverflow.com/a/55757473/12429735RUN
+RUN adduser \
+    --disabled-password \
+    --gecos "" \
+    --shell "/sbin/nologin" \
+    --uid "${UID}" \
+    "${USER}"
+
+RUN mkdir -p /var/lib/mevplus && chown -R ${USER}:${USER} /var/lib/mevplus && chmod -R 700 /var/lib/mevplus
+
+# Cannot assume buildkit, hence no chmod
+COPY --from=builder --chown=${USER}:${USER} /src/mev-plus/mevPlus /usr/local/bin/
+COPY --chown=${USER}:${USER} ./docker-entrypoint.sh /usr/local/bin/
+# Belt and suspenders
+RUN chmod -R 755 /usr/local/bin/*
+
+USER ${USER}
+
+ENTRYPOINT ["mevPlus"]
