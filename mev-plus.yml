@@ -20,7 +20,7 @@ services:
     pull_policy: build
     user: mevPlus
     environment:
-      - MEV_NODE:${MEV_NODE:-}
+      - MEV_NODE=${MEV_NODE:-}
     entrypoint:
       - docker-entrypoint.sh
       - mevPlus
