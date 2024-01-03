@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 
 __project_name="K2 Docker"
-__app_name="mev-plus"
+__app_name="mev-plus middleware"
 __sample_service="mev-plus"
 __docker_exe="docker"
 __compose_exe="docker compose"
