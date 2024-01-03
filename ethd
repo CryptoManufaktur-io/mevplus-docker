@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-__project_name="K2 Docker"
+__project_name="MEV+ Docker"
 __app_name="mev-plus middleware"
 __sample_service="mev-plus"
 __docker_exe="docker"
