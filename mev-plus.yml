@@ -28,6 +28,8 @@ services:
       - ${LOG_LEVEL}
       - --builderApi.listen-address
       - http://0.0.0.0:18551
+      - --k2.listen-address
+      - http://0.0.0.0:${K2_PORT:-10000}
       - --k2.beacon-node-url
       - ${CL_NODE}
       - --k2.execution-node-url
