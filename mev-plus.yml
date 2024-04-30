@@ -17,7 +17,7 @@ services:
         - SRC_REPO=${MEVPLUS_SRC_REPO:-https://github.com/pon-network/mev-plus}
     stop_grace_period: 1m
     image: mevplus:local
-    pull_policy: build
+    pull_policy: never
     user: mevPlus
     environment:
       - MEV_NODE=${MEV_NODE:-}
