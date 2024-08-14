@@ -1,5 +1,5 @@
 # Build mev-plus in a stock Go build container
-FROM golang:1.22-alpine as builder
+FROM golang:1.23-alpine AS builder
 
 ARG BUILD_TARGET
 ARG SRC_REPO
